@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option csharp_namespace = "ProximityService.Grpc";
+
+package proximity;
+
+service ProximityGrpc {
+  rpc SearchNearby (NearbySearchRequest) returns (NearbySearchResponse);
+}
+
+message NearbySearchRequest {
+  double latitude = 1;
+  double longitude = 2;
+  int32 radius_meters = 3;
+  string category = 4;
+  int32 max_results = 5;
+}
+
+message NearbySearchResponse {
+  repeated BusinessResult businesses = 1;
+}
+
+message BusinessResult {
+  string business_id = 1;
+  string name = 2;
+  double latitude = 3;
+  double longitude = 4;
+  double distance_meters = 5;
+  string category = 6;
+  double rating = 7;
+}

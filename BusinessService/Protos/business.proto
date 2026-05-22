@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+option csharp_namespace = "BusinessService.Grpc";
+
+package business;
+
+service BusinessGrpc {
+  rpc GetBusiness (GetBusinessRequest) returns (BusinessResponse);
+  rpc CreateBusiness (CreateBusinessRequest) returns (BusinessResponse);
+  rpc UpdateBusiness (UpdateBusinessRequest) returns (BusinessResponse);
+  rpc DeleteBusiness (DeleteBusinessRequest) returns (DeleteBusinessResponse);
+  rpc GetBusinessesByIds (GetBusinessesByIdsRequest) returns (GetBusinessesByIdsResponse);
+}
+
+message GetBusinessRequest {
+  string business_id = 1;
+}
+
+message GetBusinessesByIdsRequest {
+  repeated string business_ids = 1;
+}
+
+message GetBusinessesByIdsResponse {
+  repeated BusinessResponse businesses = 1;
+}
+
+message CreateBusinessRequest {
+  string name = 1;
+  double latitude = 2;
+  double longitude = 3;
+  string category = 4;
+  string address = 5;
+  string phone = 6;
+}
+
+message UpdateBusinessRequest {
+  string business_id = 1;
+  string name = 2;
+  double latitude = 3;
+  double longitude = 4;
+  string category = 5;
+  string address = 6;
+  string phone = 7;
+}
+
+message DeleteBusinessRequest {
+  string business_id = 1;
+}
+
+message DeleteBusinessResponse {
+  bool success = 1;
+}
+
+message BusinessResponse {
+  string business_id = 1;
+  string name = 2;
+  double latitude = 3;
+  double longitude = 4;
+  string category = 5;
+  string address = 6;
+  string phone = 7;
+  double rating = 8;
+  string geohash = 9;
+}

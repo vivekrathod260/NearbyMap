@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proximity-service
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: proximity-service
+  template:
+    metadata:
+      labels:
+        app: proximity-service
+    spec:
+      containers:
+        - name: proximity-service
+          image: proximity-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ConnectionStrings__SqlServer
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: proximity-connection
+            - name: ConnectionStrings__Redis
+              value: "redis-cluster:6379"
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+            - name: Kestrel__EndpointDefaults__Protocols
+              value: "Http2"
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "2000m"
+              memory: "2Gi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proximity-service
+spec:
+  selector:
+    app: proximity-service
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: proximity-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: proximity-service
+  minReplicas: 5
+  maxReplicas: 50
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70

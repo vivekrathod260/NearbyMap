@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 2gb --maxmemory-policy allkeys-lru
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+
+  proximity-service:
+    build:
+      context: .
+      dockerfile: ProximityService/Dockerfile
+    ports:
+      - "5101:8080"
+    environment:
+      - ConnectionStrings__SqlServer=Server=sqlserver;Database=ProximityDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+      - ConnectionStrings__Redis=redis:6379
+      - ASPNETCORE_URLS=http://+:8080
+      - Kestrel__EndpointDefaults__Protocols=Http2
+    depends_on:
+      - redis
+      - sqlserver
+
+  business-service:
+    build:
+      context: .
+      dockerfile: BusinessService/Dockerfile
+    ports:
+      - "5102:8080"
+    environment:
+      - ConnectionStrings__SqlServer=Server=sqlserver;Database=BusinessDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+      - ConnectionStrings__Redis=redis:6379
+      - ASPNETCORE_URLS=http://+:8080
+      - Kestrel__EndpointDefaults__Protocols=Http2
+    depends_on:
+      - redis
+      - sqlserver
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: APIGateway/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - Services__Proximity=http://proximity-service:8080
+      - Services__Business=http://business-service:8080
+      - ASPNETCORE_URLS=http://+:8080
+    depends_on:
+      - proximity-service
+      - business-service
