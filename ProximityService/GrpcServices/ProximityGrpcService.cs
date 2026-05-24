@@ -13,8 +13,7 @@ public sealed class ProximityGrpcService : ProximityGrpc.ProximityGrpcBase
         _searchService = searchService;
     }
 
-    public override async Task<NearbySearchResponse> SearchNearby(
-        NearbySearchRequest request, ServerCallContext context)
+    public override async Task<NearbySearchResponse> SearchNearby(NearbySearchRequest request, ServerCallContext context)
     {
         var maxResults = request.MaxResults > 0 ? request.MaxResults : 20;
         var radius = request.RadiusMeters > 0 ? request.RadiusMeters : 5000;

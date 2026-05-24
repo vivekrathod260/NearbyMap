@@ -66,16 +66,24 @@ public static class GeohashHelper
             int val = Base32Lookup[c];
             for (int bit = 4; bit >= 0; bit--)
             {
+                bool isSet = false;
+                if((val & (1 << bit)) != 0) isSet = true;
+
                 if (isLon)
                 {
                     double mid = (lonMin + lonMax) / 2;
-                    if ((val >> bit & 1) == 1) lonMin = mid; else lonMax = mid;
+
+                    if (isSet) lonMin = mid;
+                    else lonMax = mid;
                 }
                 else
                 {
                     double mid = (latMin + latMax) / 2;
-                    if ((val >> bit & 1) == 1) latMin = mid; else latMax = mid;
+
+                    if (isSet) latMin = mid;
+                    else latMax = mid;
                 }
+
                 isLon = !isLon;
             }
         }

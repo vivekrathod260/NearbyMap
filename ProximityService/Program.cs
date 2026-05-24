@@ -10,12 +10,13 @@ builder.Services.AddGrpc();
 
 // Redis - distributed cache for geohash cells
 builder.Services.AddSingleton<IConnectionMultiplexer>(
-    ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379"));
+    ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379")
+);
 
 // SQL Server - read-optimized with geohash indexes
 builder.Services.AddDbContext<ProximityDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"),
-        sql => sql.EnableRetryOnFailure(3)));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"), sql => sql.EnableRetryOnFailure(3))
+);
 
 builder.Services.AddScoped<ProximitySearchService>();
 

@@ -20,22 +20,16 @@ public sealed class ProximitySearchService
 {
     private readonly ProximityDbContext _db;
     private readonly IConnectionMultiplexer _redis;
-    private readonly ILogger<ProximitySearchService> _logger;
 
     private static readonly TimeSpan GeoCellTtl = TimeSpan.FromMinutes(5);
 
-    public ProximitySearchService(
-        ProximityDbContext db,
-        IConnectionMultiplexer redis,
-        ILogger<ProximitySearchService> logger)
+    public ProximitySearchService(ProximityDbContext db, IConnectionMultiplexer redis)
     {
         _db = db;
         _redis = redis;
-        _logger = logger;
     }
 
-    public async Task<List<BusinessWithDistance>> SearchNearbyAsync(
-        double latitude, double longitude, int radiusMeters, string? category, int maxResults = 20)
+    public async Task<List<BusinessWithDistance>> SearchNearbyAsync(double latitude, double longitude, int radiusMeters, string? category, int maxResults = 20)
     {
         int precision = GeohashHelper.GetPrecisionForRadius(radiusMeters);
         string centerHash = GeohashHelper.Encode(latitude, longitude, precision);
@@ -46,9 +40,7 @@ public sealed class ProximitySearchService
 
         foreach (var hash in geohashes)
         {
-            string cacheKey = string.IsNullOrEmpty(category)
-                ? $"geo:{hash}"
-                : $"geo:{hash}:{category}";
+            string cacheKey = string.IsNullOrEmpty(category) ? $"geo:{hash}" : $"geo:{hash}:{category}";
 
             var cached = await db.StringGetAsync(cacheKey);
             if (cached.HasValue)
@@ -59,12 +51,9 @@ public sealed class ProximitySearchService
             else
             {
                 // Cache miss - query database using geohash prefix index
-                var query = _db.BusinessLocations
-                    .AsNoTracking()
-                    .Where(b => b.Geohash.StartsWith(hash));
+                var query = _db.BusinessLocations.AsNoTracking().Where(b => b.Geohash.StartsWith(hash));
 
-                if (!string.IsNullOrEmpty(category))
-                    query = query.Where(b => b.Category == category);
+                if (!string.IsNullOrEmpty(category)) query = query.Where(b => b.Category == category);
 
                 var items = await query.ToListAsync();
                 candidates.AddRange(items);

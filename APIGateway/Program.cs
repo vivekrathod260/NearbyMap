@@ -13,9 +13,7 @@ builder.Services.AddGrpcClient<BusinessGrpc.BusinessGrpcClient>(o =>
 var app = builder.Build();
 
 // Proximity search endpoint
-app.MapGet("/api/nearby", async (
-    double lat, double lon, int? radius, string? category, int? limit,
-    ProximityGrpc.ProximityGrpcClient proximity) =>
+app.MapGet("/api/nearby", async (double lat, double lon, int? radius, string? category, int? limit, ProximityGrpc.ProximityGrpcClient proximity) =>
 {
     var response = await proximity.SearchNearbyAsync(new NearbySearchRequest
     {
