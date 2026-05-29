@@ -22,6 +22,12 @@ builder.Services.AddScoped<ProximitySearchService>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ProximityDbContext>();
+    db.Database.Migrate();
+}
+
 app.MapGrpcService<ProximityGrpcService>();
 app.MapGet("/health", () => Results.Ok("healthy"));
 

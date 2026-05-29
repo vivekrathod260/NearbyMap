@@ -17,6 +17,12 @@ builder.Services.AddDbContext<BusinessDbContext>(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<BusinessDbContext>();
+    db.Database.Migrate();
+}
+
 app.MapGrpcService<BusinessGrpcService>();
 app.MapGet("/health", () => Results.Ok("healthy"));
 
