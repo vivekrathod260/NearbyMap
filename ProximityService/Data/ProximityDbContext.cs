@@ -12,6 +12,9 @@ public class ProximityDbContext : DbContext
     {
         modelBuilder.Entity<BusinessLocation>(entity =>
         {
+            // Read from the shared Businesses table owned by BusinessService
+            entity.ToTable("Businesses");
+
             entity.HasKey(e => e.BusinessId);
             entity.Property(e => e.BusinessId).HasMaxLength(36);
             entity.Property(e => e.Name).HasMaxLength(256).IsRequired();
@@ -19,7 +22,7 @@ public class ProximityDbContext : DbContext
             entity.Property(e => e.Geohash).HasMaxLength(12).IsRequired();
 
             // Critical indexes for read-heavy geospatial queries
-            entity.HasIndex(e => e.Geohash).HasDatabaseName("IX_BusinessLocation_Geohash");
+            entity.HasIndex(e => e.Geohash).HasDatabaseName("IX_Business_Geohash");
             entity.HasIndex(e => new { e.Geohash, e.Category }).HasDatabaseName("IX_BusinessLocation_Geohash_Category");
         });
     }

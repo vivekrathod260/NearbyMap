@@ -1,27 +1,27 @@
 ### Health
-GET https://localhost:5000/health
+GET http://localhost:5000/health
 
 ### Search nearby
-GET https://localhost:5000/api/nearby?lat=47.61&lon=-122.33&radius=5000&limit=10
+GET http://localhost:5000/api/nearby?lat=47.61&lon=-122.33&radius=5000&limit=10
 
 ### Get business by id
-GET https://localhost:5000/api/business/123
+GET http://localhost:5000/api/business/123
 
 ### Create business
-POST https://localhost:5000/api/business
+POST http://localhost:5000/api/business
 Content-Type: application/json
 
 {
   "name": "My Coffee",
-  "latitude": 37.77,
-  "longitude": -122.42,
+  "latitude": 47.61,
+  "longitude": -122.33,
   "category": "Cafe",
   "address": "1 Main St",
   "phone": "555-0100"
 }
 
 ### Update business
-PUT https://localhost:5000/api/business/123
+PUT http://localhost:5000/api/business/123
 Content-Type: application/json
 
 {
@@ -34,4 +34,4 @@ Content-Type: application/json
 }
 
 ### Delete business
-DELETE https://localhost:5000/api/business/123
+DELETE http://localhost:5000/api/business/123

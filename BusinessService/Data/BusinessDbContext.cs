@@ -21,6 +21,7 @@ public class BusinessDbContext : DbContext
             entity.Property(e => e.Phone).HasMaxLength(32);
 
             entity.HasIndex(e => e.Geohash).HasDatabaseName("IX_Business_Geohash");
+            entity.HasIndex(e => new { e.Geohash, e.Category }).HasDatabaseName("IX_BusinessLocation_Geohash_Category");
         });
     }
 }

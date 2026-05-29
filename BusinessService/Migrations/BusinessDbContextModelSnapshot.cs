@@ -73,6 +73,9 @@ namespace BusinessService.Migrations
                     b.HasIndex("Geohash")
                         .HasDatabaseName("IX_Business_Geohash");
 
+                    b.HasIndex("Geohash", "Category")
+                        .HasDatabaseName("IX_BusinessLocation_Geohash_Category");
+
                     b.ToTable("Businesses");
                 });
 #pragma warning restore 612, 618
