@@ -13,7 +13,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
-      "launchUrl": "api/nearby?lat=37.77&lon=-122.42&radius=1000&limit=10",
+      "launchUrl": "api/nearby?lat=47.61&lon=-122.33&radius=1000&limit=10",
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

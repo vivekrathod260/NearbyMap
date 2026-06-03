@@ -3,6 +3,7 @@ using BusinessService.Grpc;
 using Grpc.Core;
 using System.Net.Sockets;
 using System.Net.Http;
+using System.Net.Security;
 using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,9 +15,10 @@ builder.Services.AddGrpcClient<BusinessGrpc.BusinessGrpcClient>(o =>
     o.Address = new Uri(builder.Configuration["Services:Business"] ?? "https://localhost:7196"))
     .ConfigurePrimaryHttpMessageHandler(() =>
     {
-        var handler = new HttpClientHandler();
+        var handler = new SocketsHttpHandler();
+        handler.EnableMultipleHttp2Connections = true;
         if (environment.IsDevelopment())
-            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            handler.SslOptions.RemoteCertificateValidationCallback = (_, _, _, _) => true;
         return handler;
     });
 
@@ -24,9 +26,10 @@ builder.Services.AddGrpcClient<ProximityGrpc.ProximityGrpcClient>(o =>
     o.Address = new Uri(builder.Configuration["Services:Proximity"] ?? "https://localhost:7102"))
     .ConfigurePrimaryHttpMessageHandler(() =>
     {
-        var handler = new HttpClientHandler();
+        var handler = new SocketsHttpHandler();
+        handler.EnableMultipleHttp2Connections = true;
         if (environment.IsDevelopment())
-            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            handler.SslOptions.RemoteCertificateValidationCallback = (_, _, _, _) => true;
         return handler;
     });
 

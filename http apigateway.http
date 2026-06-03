@@ -13,8 +13,8 @@ Content-Type: application/json
 
 {
   "name": "My Coffee",
-  "latitude": 37.77,
-  "longitude": -122.42,
+  "latitude": 47.61,
+  "longitude": -122.33,
   "category": "Cafe",
   "address": "1 Main St",
   "phone": "555-0100"
