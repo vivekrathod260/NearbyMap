@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment;
 
 builder.Services.AddGrpcClient<BusinessGrpc.BusinessGrpcClient>(o =>
-    o.Address = new Uri(builder.Configuration["Services:Business"] ?? "https://localhost:7196"))
+    o.Address = new Uri(builder.Configuration["Services:Business"] ?? "http://localhost:7196"))
     .ConfigurePrimaryHttpMessageHandler(() =>
     {
         var handler = new SocketsHttpHandler();
@@ -23,7 +23,7 @@ builder.Services.AddGrpcClient<BusinessGrpc.BusinessGrpcClient>(o =>
     });
 
 builder.Services.AddGrpcClient<ProximityGrpc.ProximityGrpcClient>(o =>
-    o.Address = new Uri(builder.Configuration["Services:Proximity"] ?? "https://localhost:7102"))
+    o.Address = new Uri(builder.Configuration["Services:Proximity"] ?? "http://localhost:7102"))
     .ConfigurePrimaryHttpMessageHandler(() =>
     {
         var handler = new SocketsHttpHandler();
