@@ -12,7 +12,14 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(
 );
 
 builder.Services.AddDbContext<BusinessDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"), sql => sql.EnableRetryOnFailure(3))
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("SqlServer"),
+        sqlServerOptions =>
+        {
+            sqlServerOptions.EnableRetryOnFailure(3);
+            sqlServerOptions.MigrationsHistoryTable("__BusinessMigrationsHistory");
+        }
+    )
 );
 
 var app = builder.Build();
