@@ -32,18 +32,16 @@ public sealed class BusinessGrpcService : BusinessGrpc.BusinessGrpcBase
             if (b != null) return MapToResponse(b);
         }
 
-        var business = await _db.Businesses.AsNoTracking()
-            .FirstOrDefaultAsync(b => b.BusinessId == request.BusinessId);
+        var business = await _db.Businesses.AsNoTracking().FirstOrDefaultAsync(b => b.BusinessId == request.BusinessId);
 
-        if (business == null)
-            throw new RpcException(new Status(StatusCode.NotFound, "Business not found"));
+        if (business == null) throw new RpcException(new Status(StatusCode.NotFound, "Business not found"));
 
         await cache.StringSetAsync(cacheKey, JsonSerializer.Serialize(business), BusinessTtl);
+
         return MapToResponse(business);
     }
 
-    public override async Task<GetBusinessesByIdsResponse> GetBusinessesByIds(
-        GetBusinessesByIdsRequest request, ServerCallContext context)
+    public override async Task<GetBusinessesByIdsResponse> GetBusinessesByIds(GetBusinessesByIdsRequest request, ServerCallContext context)
     {
         var response = new GetBusinessesByIdsResponse();
         var cache = _redis.GetDatabase();
@@ -135,8 +133,7 @@ public sealed class BusinessGrpcService : BusinessGrpc.BusinessGrpcBase
     public override async Task<DeleteBusinessResponse> DeleteBusiness(DeleteBusinessRequest request, ServerCallContext context)
     {
         var business = await _db.Businesses.FindAsync(request.BusinessId);
-        if (business == null)
-            return new DeleteBusinessResponse { Success = false };
+        if (business == null) return new DeleteBusinessResponse { Success = false };
 
         _db.Businesses.Remove(business);
         await _db.SaveChangesAsync();

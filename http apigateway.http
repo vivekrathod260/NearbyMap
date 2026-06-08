@@ -2,7 +2,7 @@
 GET http://localhost:5000/health
 
 ### Search nearby
-GET http://localhost:5000/api/nearby?lat=37.77&lon=-122.42&radius=5000&limit=10
+GET http://localhost:5000/api/nearby?lat=47.61&lon=-122.33&radius=5000&limit=10
 
 ### Get business by id
 GET http://localhost:5000/api/business/123
@@ -13,8 +13,8 @@ Content-Type: application/json
 
 {
   "name": "My Coffee",
-  "latitude": 37.77,
-  "longitude": -122.42,
+  "latitude": 47.61,
+  "longitude": -122.33,
   "category": "Cafe",
   "address": "1 Main St",
   "phone": "555-0100"
@@ -34,4 +34,4 @@ Content-Type: application/json
 }
 
 ### Delete business
-DELETE http://localhost:5000/api/business/4d31e57a-8b1e-4c09-ac5f-a4030d9c0b68
+DELETE http://localhost:5000/api/business/123

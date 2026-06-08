@@ -8,13 +8,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddGrpc();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(
-    ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379"));
+    ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379")
+);
 
 builder.Services.AddDbContext<BusinessDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"),
-        sql => sql.EnableRetryOnFailure(3)));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"), sql => sql.EnableRetryOnFailure(3))
+);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<BusinessDbContext>();
+    db.Database.Migrate();
+}
 
 app.MapGrpcService<BusinessGrpcService>();
 app.MapGet("/health", () => Results.Ok("healthy"));

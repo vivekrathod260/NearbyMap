@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: ProximityService/Dockerfile
     ports:
-      - "5101:8080"
+      - "5002:8080"
     environment:
       - ConnectionStrings__SqlServer=Server=sqlserver;Database=ProximityDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
       - ConnectionStrings__Redis=redis:6379
@@ -35,7 +35,7 @@ services:
       context: .
       dockerfile: BusinessService/Dockerfile
     ports:
-      - "5102:8080"
+      - "5001:8080"
     environment:
       - ConnectionStrings__SqlServer=Server=sqlserver;Database=BusinessDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
       - ConnectionStrings__Redis=redis:6379
@@ -54,6 +54,7 @@ services:
     environment:
       - Services__Proximity=http://proximity-service:8080
       - Services__Business=http://business-service:8080
+      - DOTNET_SYSTEM_NET_HTTP_SOCKETSHTTPHANDLER_HTTP2UNENCRYPTEDSUPPORT=true
       - ASPNETCORE_URLS=http://+:8080
     depends_on:
       - proximity-service
