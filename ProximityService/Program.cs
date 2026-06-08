@@ -18,26 +18,9 @@ builder.Services.AddDbContext<ProximityDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"), sql => sql.EnableRetryOnFailure(3))
 );
 
-builder.Services.AddDbContext<ProximityDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("SqlServer"),
-        sqlServerOptions =>
-        {
-            sqlServerOptions.EnableRetryOnFailure(3);
-            sqlServerOptions.MigrationsHistoryTable("__ProximityMigrationsHistory");
-        }
-    )
-);
-
 builder.Services.AddScoped<ProximitySearchService>();
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ProximityDbContext>();
-    db.Database.Migrate();
-}
 
 app.MapGrpcService<ProximityGrpcService>();
 app.MapGet("/health", () => Results.Ok("healthy"));
